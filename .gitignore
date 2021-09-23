@@ -1,0 +1,8 @@
+# 文件类
+*.tsv
+
+
+# 文件夹类 
+test/
+logs/
+bert-base-chinese/
