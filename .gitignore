@@ -7,3 +7,4 @@
 test/
 logs/
 bert-base-chinese/
+__pycache__/
