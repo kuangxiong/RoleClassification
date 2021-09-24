@@ -39,7 +39,7 @@ if __name__ =='__main__':
     # 保存模型的目录
     save_path = ModelConfig.save_model
     # 若文件不存在，创建文件
-    if os.path.exists(save_path):
+    if not os.path.exists(save_path):
         os.mkdir(save_path)
     checkpoint_cb = keras.callbacks.ModelCheckpoint(
         "bert_model",
@@ -63,6 +63,6 @@ if __name__ =='__main__':
     # )
 
     logger.info("完成模型训练！")
-    model.save_weights("bert_model.h5")
+    model.save_weights(os.path.join(save_path, "bert_model.h5"))
     print(model.summary())
     print(data_X_ind[0])
