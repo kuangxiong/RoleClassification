@@ -13,10 +13,13 @@ class ModelConfig(GlobalData):
     Args:
         GlobalData ([class]): [全局文件路径]
     """
+    n_epoch = 1000
+    batch_size = 128 
+    learning_rate = 0.001
+    max_len = 100
+
     bert_path = os.path.join(BASE_PATH, "bert-base-chinese")
     save_model = os.path.join(BASE_PATH, f"save_model")
-    
     vocab_path = os.path.join(bert_path, 'vocab.txt')
-    tokenizer_path = os.path.join(bert_path, 'tokenizer.json')
-    
 
+    

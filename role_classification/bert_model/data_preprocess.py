@@ -13,11 +13,9 @@ import os
 import numpy as np 
 import tensorflow as tf 
 from transformers import BertConfig, BertModel, BertTokenizer
-
 from tensorflow import keras 
+
 from model_config import ModelConfig
-
-
 from role_classification.load_data import load_init_data
 
 class BertDataPreload(ModelConfig):
@@ -27,7 +25,7 @@ class BertDataPreload(ModelConfig):
     Args:
         ModelConfig ([type]): [description]
     """
-    
+
     def load_data(self):
         """
         download training data and test data
@@ -43,17 +41,19 @@ class BertDataPreload(ModelConfig):
             train_text ([list]): [文本数据]
             training (bool, optional): [数据是否用于训练]. Defaults to True.
         """
-        tokenizer = BertTokenizer.from_pretrained(self.tokenizer_path)
+        tokenizer = BertTokenizer.from_pretrained(self.bert_path)
+        # tokenizer = BertTokenizer(self.tokenizer_path)
         data_X_ind, data_X_seg, data_X_mask = [], [], []
         data_Y = []
         N = len(train_text)
         for i in range(N):
             if training == True:
                 seg, label = train_text[i][0], train_text[i][1]
+                data_Y.append(list(map(int, str(label).split(','))))
             else:
-                seg = train_text[i][0]
+                seg = train_text[i]
             token_output = tokenizer(
-                seg, 
+                " ".join(seg), 
                 padding='max_length', 
                 truncation=True, 
                 max_length=self.max_len
@@ -71,15 +71,9 @@ class BertDataPreload(ModelConfig):
 if __name__ == '__main__':
     BertData = BertDataPreload()
     train_data, test_data = BertData.load_data()
+    print(train_data[0])
     data_X_ind, data_X_seg, data_X_mask, data_Y = BertData.bert_text2id(train_data)
     print(data_X_ind[0])
     print(data_X_seg[0])
     print(data_X_mask[0])
-
-
-
-
-
-
-        
-
+    print(data_Y[0])
