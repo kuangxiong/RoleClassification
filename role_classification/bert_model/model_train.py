@@ -54,15 +54,16 @@ if __name__ =='__main__':
     train_X_seg = tf.convert_to_tensor(data_X_seg)
     train_X_mask = tf.convert_to_tensor(data_X_mask)
 
+    data_Y = tf.convert_to_tensor(data_Y)
+
     logger.info("开始模型训练！")
-    # history = model.fit(
-    #     [train_X_ind, train_X_mask, train_X_seg], 
-    #     train_label, 
-    #     epochs= 5,
-    #     batch_size = ModelConfig.batch_size
-    # )
+    history = model.fit(
+        [train_X_ind, train_X_mask, train_X_seg], 
+        data_Y, 
+        epochs=5,
+        batch_size = ModelConfig.batch_size
+    )
 
     logger.info("完成模型训练！")
     model.save_weights(os.path.join(save_path, "bert_model.h5"))
     print(model.summary())
-    print(data_X_ind[0])

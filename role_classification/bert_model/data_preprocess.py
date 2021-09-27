@@ -53,11 +53,11 @@ class BertDataPreload(ModelConfig):
             else:
                 seg = train_text[i]
             token_output = tokenizer(
-                " ".join(seg), 
-                padding='max_length', 
-                truncation=True, 
-                max_length=self.max_len
-            )
+                    " ".join(seg), 
+                    padding='max_length', 
+                    truncation=True, 
+                    max_length=self.max_len
+                )
             indices, segments = token_output['input_ids'], token_output['token_type_ids']
             mask_token = token_output['attention_mask']
             data_X_ind.append(indices)
@@ -76,4 +76,4 @@ if __name__ == '__main__':
     print(data_X_ind[0])
     print(data_X_seg[0])
     print(data_X_mask[0])
-    print(data_Y[0])
+    print(data_Y[:2])
