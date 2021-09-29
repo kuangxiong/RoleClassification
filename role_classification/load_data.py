@@ -57,9 +57,8 @@ def load_init_data(GlobalData):
     train_dataset, test_dataset = [], []
     train_data = pd.read_csv(GlobalData.train_file, sep='\t')
     test_data = pd.read_csv(GlobalData.test_file, sep='\t')
-    
+
     train_data = train_data[(train_data['character'].notna()) & (train_data['emotions'].notna())]
-    test_data = test_data[test_data['character'].notna()]
 
     N_train, N_test = len(train_data), len(test_data)
 
@@ -69,9 +68,12 @@ def load_init_data(GlobalData):
         train_dataset.append([tmp_list, train_data.iloc[i]['emotions']])
     
     for i in range(N_test):
-        tmp_list =  str2list([test_data.iloc[i]['character']] + [test_data.iloc[i]['content']]) 
+        if pd.isnull(test_data.iloc[i]['character']):
+            tmp_list = test_data.iloc[i]['character']
+        else:
+            tmp_list =  str2list([test_data.iloc[i]['character']] + [test_data.iloc[i]['content']]) 
 
-        test_dataset.append(tmp_list)
+        test_dataset.append([test_data.iloc[i]['id'], tmp_list])
 
     logger.info("load data finish!")
     return train_dataset, test_dataset

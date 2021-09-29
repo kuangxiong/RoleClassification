@@ -1,6 +1,7 @@
 # 文件类
 *.tsv
 *.h5
+*.csv 
 
 
 # 文件夹类 
@@ -8,3 +9,4 @@ test/
 logs/
 bert-base-chinese/
 __pycache__/
+save_model/

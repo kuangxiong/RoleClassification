@@ -15,7 +15,7 @@ import tensorflow as tf
 from transformers import BertConfig, BertModel, BertTokenizer
 from tensorflow import keras 
 
-from model_config import ModelConfig
+from role_classification.bert_model.model_config import ModelConfig
 from role_classification.load_data import load_init_data
 
 class BertDataPreload(ModelConfig):
@@ -44,14 +44,16 @@ class BertDataPreload(ModelConfig):
         tokenizer = BertTokenizer.from_pretrained(self.bert_path)
         # tokenizer = BertTokenizer(self.tokenizer_path)
         data_X_ind, data_X_seg, data_X_mask = [], [], []
-        data_Y = []
+        data_Y, test_id = [], []
         N = len(train_text)
         for i in range(N):
             if training == True:
                 seg, label = train_text[i][0], train_text[i][1]
                 data_Y.append(list(map(int, str(label).split(','))))
             else:
-                seg = train_text[i]
+                
+                id, seg = train_text[i][0], train_text[i][1]
+                test_id.append(id)
             token_output = tokenizer(
                     " ".join(seg), 
                     padding='max_length', 
@@ -66,7 +68,7 @@ class BertDataPreload(ModelConfig):
         if training == True:
             return data_X_ind, data_X_seg, data_X_mask, data_Y 
         else:
-            return data_X_ind, data_X_seg, data_X_mask 
+            return data_X_ind, data_X_seg, data_X_mask, test_id
 
 if __name__ == '__main__':
     BertData = BertDataPreload()
