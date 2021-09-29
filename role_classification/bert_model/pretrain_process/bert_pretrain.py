@@ -55,7 +55,9 @@ def bert_model_pretrain(ModelConfig):
     """
 
     tokenizer = BertTokenizer.from_pretrained(ModelConfig.bert_path)
-    model = BertModel.from_pretrained(ModelConfig.bert_path)
+    config = BertConfig()
+    # model = BertModel.from_pretrained(ModelConfig.bert_path)
+    model = BertForMaskedLM(config=config)
 
     dataset = LineByLineTextDataset(
         tokenizer=tokenizer,
@@ -75,6 +77,7 @@ def bert_model_pretrain(ModelConfig):
         save_steps=ModelConfig.save_steps,
         save_total_limit=2,
     )
+    
     trainer = Trainer(
         model=model,
         args=training_args,
