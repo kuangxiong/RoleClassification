@@ -21,57 +21,70 @@ import random
 import numpy as np
 import os
 
-from role_classification.bert_model.model_config import ModelConfig 
+from role_classification.bert_model.pretrain_process.pre_config import PreModelConfig
 from role_classification.load_data import load_init_data
 
+def create_pretrain_txtfile(ModelConfig):
+    """
+    创建预训练模型的语料文件
 
-train_dataset, test_dataset = load_init_data(ModelConfig)
-text_list = []
+    Args:
+        ModelConfig ([class]): [模型配置类，训练和测试文件路径]
+    """
 
-## 加载训练集和测试集语料
-for i in range(len(train_dataset)):
-    print(train_dataset[i])
+    train_dataset, test_dataset = load_init_data(ModelConfig)
+    text_list = []
+
+    ## 加载训练集和测试集语料
+    for i in range(len(train_dataset)):
+        text_list.append(" ".join(train_dataset[i][0]))
+
+    for i in range(len(test_dataset)):
+        text_list.append(" ".join(test_dataset[i][0]))
+
+    text_file = os.path.join(ModelConfig.premodel_save_path, "train_test_text.txt")    
+    pd.Series(text_list).to_csv(text_file, header=False, index=False)
 
 
-# config = BertConfig(
+def bert_model_pretrain(ModelConfig):
+    """
+    基于现有训练语料对原始bert模型进行预训练
 
-#model = BertModel.from_pretrained("model_source/checkpoint-70000")
-model = BertForMaskedLM(config=config)
+    Args:
+        ModelConfig ([class]): [原始bert模型配置类]
+    """
 
-res = []
-for i in range(len(train)):
-    res.append(train.iloc[i]['text_a']+" "+train.iloc[i]['text_b'])
+    tokenizer = BertTokenizer.from_pretrained(ModelConfig.bert_path)
+    model = BertModel.from_pretrained(ModelConfig.bert_path, from_pt=True)
 
-for i in range(len(test)):
-    res.append(test.iloc[i]['text_a'] +" "+ test.iloc[i]['text_b'])
+    dataset = LineByLineTextDataset(
+        tokenizer=tokenizer,
+        file_path=os.path.join(ModelConfig.train_test_dir, "train_test_text.txt"),
+        block_size=32,
+    )
 
-pd.Series(res).to_csv('sentence_concat.txt', header=False,index=0)
+    data_collator = DataCollatorForLanguageModeling(
+        tokenizer=tokenizer, mlm=True, mlm_probability=0.15
+    )
+    training_args = TrainingArguments(
+        output_dir=ModelConfig.save_premodel,
+        overwrite_output_dir=True,
+        num_train_epochs=ModelConfig.n_epochs,
+        per_device_train_batch_size=ModelConfig.batch_size,
+        save_steps=ModelConfig.save_steps,
+        save_total_limit=2,
+    )
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        data_collator=data_collator,
+        train_dataset=dataset,
+    )
 
-dataset = LineByLineTextDataset(
-    # 'bert_vocab',
-    tokenizer=tokenizer,
-    file_path="./sentence_concat.txt",
-    block_size=32,
-)
+    trainer.train()
+    model.save_pretrained("bert_pretrain_model_0929")
 
-data_collator = DataCollatorForLanguageModeling(
-    tokenizer=tokenizer, mlm=True, mlm_probability=0.15
-)
-training_args = TrainingArguments(
-    output_dir="./pretrain_model_0316",
-    overwrite_output_dir=True,
-    num_train_epochs=100,
-    per_device_train_batch_size=64,
-    save_steps=5000,
-    save_total_limit=2,
-)
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    data_collator=data_collator,
-    train_dataset=dataset,
-)
 
-trainer.train()
-
-model.save_pretrained("bert_pretrain_model_0311")
+if __name__=='__main__':
+    create_pretrain_txtfile(PreModelConfig) 
+    bert_model_pretrain(PreModelConfig)
