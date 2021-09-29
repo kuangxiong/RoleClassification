@@ -2,7 +2,7 @@
 *.tsv
 *.h5
 *.csv 
-
+*.txt
 
 # 文件夹类 
 test/
