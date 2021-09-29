@@ -55,7 +55,7 @@ def bert_model_pretrain(ModelConfig):
     """
 
     tokenizer = BertTokenizer.from_pretrained(ModelConfig.bert_path)
-    model = BertModel.from_pretrained(ModelConfig.bert_path, from_pt=True)
+    model = BertModel.from_pretrained(ModelConfig.bert_path)
 
     dataset = LineByLineTextDataset(
         tokenizer=tokenizer,
@@ -66,8 +66,9 @@ def bert_model_pretrain(ModelConfig):
     data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer, mlm=True, mlm_probability=0.15
     )
+
     training_args = TrainingArguments(
-        output_dir=ModelConfig.save_premodel,
+        output_dir=ModelConfig.premodel_save_path,
         overwrite_output_dir=True,
         num_train_epochs=ModelConfig.n_epochs,
         per_device_train_batch_size=ModelConfig.batch_size,
@@ -82,7 +83,7 @@ def bert_model_pretrain(ModelConfig):
     )
 
     trainer.train()
-    model.save_pretrained("bert_pretrain_model_0929")
+    # model.save_pretrained("bert_pretrain_model_0929")
 
 
 if __name__=='__main__':
