@@ -35,13 +35,9 @@ def bert_model(ModelConfig):
     segment_id = tf.keras.layers.Input(shape=(ModelConfig.max_len, ), dtype=tf.int32, name='segment')
     mask_id = tf.keras.layers.Input(shape=(ModelConfig.max_len,), dtype=tf.int32, name='mask')
 
-    bert_output = bert_model([text_id, segment_id, mask_id], return_dict=True)
+    bert_output = bert_model([text_id, segment_id, mask_id])
     first_pooler_output = bert_output['pooler_output']
     
     model_output = keras.layers.Dense(ModelConfig.n_class)(first_pooler_output)
-
     model = keras.Model(inputs=[text_id, segment_id, mask_id], outputs=[model_output])
     return model
-    
-
-

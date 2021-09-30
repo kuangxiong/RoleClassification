@@ -1,10 +1,12 @@
 # 文件类
 *.tsv
 *.h5
-
+*.csv 
+*.txt
 
 # 文件夹类 
 data_out/
 logs/
 bert-base-chinese/
 __pycache__/
+save_model/

@@ -10,11 +10,10 @@
             "request": "launch",
             "stopOnEntry": false,
             "program": "${file}",
-            "pythonpath":"${command:python.interpreterPath}",
+            // "pythonpath":"${command:python.interpreterPath}",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {"PYTHONPATH":"${workspaceFolder}"}, // 添加此项才能解决vscode的python运行目录的问题，否则会无法正常引用当前项目目录中的其他文件
-            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
