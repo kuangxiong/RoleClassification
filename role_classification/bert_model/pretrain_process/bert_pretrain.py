@@ -56,7 +56,9 @@ def bert_model_pretrain(ModelConfig):
 
     tokenizer = BertTokenizer.from_pretrained(ModelConfig.bert_path)
     config = BertConfig()
+    # 加载现有bert模型，再进行预训练（调用方式有问题）
     # model = BertModel.from_pretrained(ModelConfig.bert_path)
+    # 重新训练bert模型
     model = BertForMaskedLM(config=config)
 
     dataset = LineByLineTextDataset(

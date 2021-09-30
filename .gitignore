@@ -5,7 +5,7 @@
 *.txt
 
 # 文件夹类 
-test/
+data_out/
 logs/
 bert-base-chinese/
 __pycache__/
