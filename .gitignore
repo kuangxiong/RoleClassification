@@ -10,3 +10,5 @@ logs/
 bert-base-chinese/
 __pycache__/
 save_model/
+.git/
+run/
