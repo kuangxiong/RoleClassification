@@ -52,6 +52,7 @@ if __name__=='__main__':
         indices, segments = token_output['input_ids'], token_output['token_type_ids']
         mask_token = token_output['attention_mask']
         res = model.predict([np.array([indices]), np.array([segments]), np.array([mask_token])])
+        print(res)
         print("-"*50)
         print(res)
         res_post = data_postprocess(res[0])

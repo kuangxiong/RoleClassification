@@ -16,7 +16,7 @@ import numpy as np
 import datetime
 from data_preprocess import BertDataPreload
 from role_classification.bert_model.model_config import ModelConfig
-from role_classification.bert_model.models.bert_cls_mse import InitBertConfig, bert_model
+from role_classification.bert_model.models.bert_avgpool_mse import InitBertConfig, bert_model
 
 logger = ModelConfig.cust_logger
 
@@ -44,16 +44,18 @@ if __name__ =='__main__':
         os.mkdir(save_path)
     print(save_path)
     checkpoint_cb = keras.callbacks.ModelCheckpoint(
-        os.path.join(save_path, 'bert_model'),
+        os.path.join(save_path, 'bert_model_0930'),
         monitor='val_mse',
         save_best_only=True,
         save_weights_only=True,
     )
+
     early_stopping_cb = keras.callbacks.EarlyStopping(
         monitor='val_mse',
         patience=2,
         restore_best_weights=True
     )
+
     train_X_ind = tf.convert_to_tensor(data_X_ind)
     train_X_seg = tf.convert_to_tensor(data_X_seg)
     train_X_mask = tf.convert_to_tensor(data_X_mask)

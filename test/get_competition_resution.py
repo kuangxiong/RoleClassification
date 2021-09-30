@@ -18,7 +18,7 @@ import pandas as pd
 from tensorflow import keras
 from transformers import BertModel, BertTokenizer
 from role_classification.bert_model.data_postprocess import data_postprocess
-from role_classification.bert_model.models.bert_cls_mse  import InitBertConfig, bert_model
+from role_classification.bert_model.models.bert_avgpool_mse  import InitBertConfig, bert_model
 from role_classification.load_data import load_init_data
 from config import GlobalData
 
@@ -53,11 +53,11 @@ if __name__=='__main__':
             mask_token = token_output['attention_mask']
             res = model.predict([np.array([indices]), np.array([segments]), np.array([mask_token])])
             res_post = data_postprocess(res[0])
-
+            
             emotion_list.append(",".join(list(map(str, res_post))))
         except:
             emotion_list.append("0,0,0,0,0")
     print(id_list[:5])
     print(emotion_list[:5])
     ans = pd.DataFrame({"id":id_list, "emotion":emotion_list})
-    ans.to_csv("test/data_out/ans_v1.txt", index=False, sep='\t')
+    ans.to_csv("test/data_out/ans_v2.txt", index=False, sep='\t')
