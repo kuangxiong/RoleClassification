@@ -41,7 +41,7 @@ def bert_model(ModelConfig):
     bert_output = bert_model([text_id, segment_id, mask_id])
     last_hidden_state = bert_output['last_hidden_state']
     
-    # bert 模型的输出，非padding部分取平均
+    # bert 模型的输出，对last_hidden_state部分取平均
     avg_bert_out = Lambda(lambda x:tf.reduce_mean(x, axis=1))(last_hidden_state)
     # avg_bert_out = tf.reduce_mean(last_hidden_state, axis=0) 
     # avg_bert_out = bert_output['pooler_output']
